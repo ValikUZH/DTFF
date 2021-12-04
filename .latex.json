@@ -1,0 +1,11 @@
+{
+  "projectPath": "/Users/seonbin/Documents/GitHub/DTfF",
+  "title": "LaTeX-Plus Project",
+  "root": "Ass4/text/playground/play1.tex",
+  "program": "pdflatex",
+  "latexmkOptions": "-bibtex -pdf -shell-escape",
+  "output": ".latex",
+  "openOutput": "true",
+  "postAction": "link",
+  "postPath": ""
+}

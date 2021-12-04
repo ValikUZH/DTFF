@@ -1,0 +1,60 @@
+<?php
+
+$table_name= "product";
+
+$result = $mysqli->query( "SELECT productId FROM $table_name" );
+while ( $rows =  $result->fetch_assoc() ) {
+$pid = $rows['productId'];
+}
+
+
+
+include "api.plos.org/search?q=title:DNA";
+$plos = new \api\plos("api", "api\plos", "json");
+
+$url = 'http://api.plos.org/search?q=title:DNA;
+
+$details = $plos->call_url($url);
+
+if(!$details){
+
+    echo 'Error: Could not get the product listing.';
+
+    exit();
+}
+
+$details = json_decode($details, TRUE);
+$mrp = $details['productBasicInfo1']['productAttribute']['maximumRetailPrice']['quantity'];
+$newPrice = $details['productBasicInfo1']['productAttribute']['sellingPrice']['quantity'];
+$newInStock = (int) $details['productBasicInfo']['productAttribute']['ofStock'];
+$discountPercentage = $details['productBasicInfo']['productAttribute']['discountPercentage'];
+
+if ($newofStock == 1)
+{ $newofStock= 'true'; } else { $newofStock = 'false'; }
+echo $newofStock;
+echo '<br />';
+echo $newPrice;
+echo '<br />';
+
+// Mysql Connection //
+
+$result = $mysqli->query( "SELECT price,ofStock FROM $table_name WHERE productId = '$pid' ") ;
+while ( $rows =  $result->fetch_assoc() ) {
+$price = $rows['price'];
+$inStock = $rows['ofStock'];
+}
+
+if ($newPrice != $price || $newofStock != $ofStock)
+  {
+$results = $mysqli->query("UPDATE $table_name SET price='$newPrice', ofStock='$newofStock' WHERE productId='$pid' ");
+
+if($results){
+    print 'Success! record is now updated'; 
+}else{
+    print 'Error : ('. $mysqli->errno .') '. $mysqli->error;
+}
+  }
+
+// close connection
+$mysqli->close();
+?>
